@@ -324,3 +324,26 @@ list-of-ints) to well under a minute on a 2.5 GB address space.
 **Enrichment:**
 - [Scryfall API](https://scryfall.com/docs/api) — image URIs and format legality (per-card `/cards/arena/<arena_id>` endpoint)
 - MTGA's own bundled SQLite card DB at `MTGA_Data/Downloads/Raw/Raw_CardDatabase_*.mtga` — everything else (mana cost, oracle text, colors, P/T, artist, etc.)
+
+---
+
+## Legal
+
+> mtga-linux-exporter is unofficial Fan Content permitted under the
+> [Wizards of the Coast Fan Content Policy](https://company.wizards.com/en/legal/fancontentpolicy).
+> Not approved/endorsed by Wizards. Portions of the materials used are
+> property of Wizards of the Coast. ©Wizards of the Coast LLC.
+
+**Magic: The Gathering** and **MTG Arena** are trademarks of Wizards of
+the Coast LLC. This project is **not affiliated with, endorsed by, or
+sponsored by** Wizards of the Coast or Hasbro. No Wizards trademarks,
+logos, mana symbols, or card art assets are distributed in this
+repository — card metadata is read at runtime from the user's own
+installed copy of MTG Arena, and card images are fetched from Scryfall.
+
+Downstream users of the enriched output must follow
+[Scryfall's data & image guidelines](https://scryfall.com/docs/api)
+(don't modify or crop card images, don't obscure artist credits, don't
+imply Scryfall endorsement).
+
+See [DISCLAIMER.md](DISCLAIMER.md) for the full notice.
