@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "pid": 109427,
+    "address": "0x241036020",
+    "kind": "dict",
+    "unique_cards": 5,
+    "total_copies": 5,
+    "anchors_matched": 5,
+    "anchors_total": 5,
+    "anchor_breakdown": [
+      {
+        "name": "Lyra Dawnbringer",
+        "expected": 1,
+        "found": 1,
+        "status": "ok"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "grp_id": 94135,
+      "name": "Lyra Dawnbringer",
+      "set": "FDN",
+      "collector_number": "707",
+      "rarity": "mythic",
+      "is_primary": true,
+      "count": 1
+    },
+    {
+      "grp_id": 96238,
+      "name": "Fatal Push",
+      "set": "FCA",
+      "collector_number": "9",
+      "rarity": "uncommon",
+      "is_primary": true,
+      "count": 1
+    },
+    {
+      "grp_id": 9135,
+      "name": "Mind Stone",
+      "set": "WTH",
+      "collector_number": "153",
+      "rarity": "common",
+      "is_primary": true,
+      "count": 1
+    },
+    {
+      "grp_id": 68096,
+      "name": "Vivien Reid",
+      "set": "M19",
+      "collector_number": "208",
+      "rarity": "mythic",
+      "is_primary": true,
+      "count": 1
+    },
+    {
+      "grp_id": 66109,
+      "name": "Search for Azcanta",
+      "set": "XLN",
+      "collector_number": "74",
+      "rarity": "rare",
+      "is_primary": true,
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# Personal collection dumps — see examples/ for representative samples.
+/collection.json
+/enriched.json
