@@ -347,3 +347,5 @@ Downstream users of the enriched output must follow
 imply Scryfall endorsement).
 
 See [DISCLAIMER.md](DISCLAIMER.md) for the full notice.
+
+The source code is released under the [MIT License](LICENSE).
