@@ -18,6 +18,7 @@ import csv
 import json
 import os
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -206,6 +207,32 @@ def _gather_anchors(args: argparse.Namespace, db: CardDB) -> list:
     )
 
 
+@contextmanager
+def _atomic_out(out: Path | None, newline: str | None = None):
+    """Yield a writable stream for `out`, or stdout when `out` is None.
+
+    File output is written to a sibling temp file and renamed into place
+    only after a successful flush+fsync. os.replace is atomic on POSIX,
+    so a run interrupted mid-write leaves the previous file intact rather
+    than truncating it to invalid JSON.
+    """
+    if out is None:
+        yield sys.stdout
+        return
+    tmp = out.with_name(out.name + ".tmp")
+    stream = open(tmp, "w", newline=newline, encoding="utf-8")
+    try:
+        yield stream
+        stream.flush()
+        os.fsync(stream.fileno())
+        stream.close()
+        os.replace(tmp, out)
+    except BaseException:
+        stream.close()
+        tmp.unlink(missing_ok=True)
+        raise
+
+
 def _emit_collection(
     block: dict[int, int],
     db: CardDB,
@@ -224,8 +251,7 @@ def _emit_collection(
             rows.append(_card_dict(card, count))
 
     if fmt == "csv":
-        stream = open(out, "w", newline="", encoding="utf-8") if out else sys.stdout
-        try:
+        with _atomic_out(out, newline="") as stream:
             w = csv.writer(stream)
             w.writerow(["grp_id", "count", "name", "set", "collector_number",
                         "rarity", "is_primary"])
@@ -235,26 +261,15 @@ def _emit_collection(
                     r["set"] or "", r["collector_number"] or "",
                     r["rarity"] or "", int(bool(r["is_primary"])),
                 ])
-        finally:
-            if out:
-                stream.close()
     elif fmt == "jsonl":
-        stream = open(out, "w", encoding="utf-8") if out else sys.stdout
-        try:
+        with _atomic_out(out) as stream:
             for r in rows:
                 stream.write(json.dumps(r) + "\n")
-        finally:
-            if out:
-                stream.close()
     else:  # json
         payload = {"meta": metadata, "cards": rows}
-        stream = open(out, "w", encoding="utf-8") if out else sys.stdout
-        try:
+        with _atomic_out(out) as stream:
             json.dump(payload, stream, indent=2)
             stream.write("\n")
-        finally:
-            if out:
-                stream.close()
 
 
 def cmd_collect(args: argparse.Namespace) -> int:
@@ -450,13 +465,9 @@ def cmd_enrich(args: argparse.Namespace) -> int:
 
     out_path = Path(args.out) if args.out else None
     payload = {"meta": meta, "cards": enriched}
-    stream = open(out_path, "w", encoding="utf-8") if out_path else sys.stdout
-    try:
+    with _atomic_out(out_path) as stream:
         json.dump(payload, stream, indent=2)
         stream.write("\n")
-    finally:
-        if out_path:
-            stream.close()
 
     if out_path and not args.quiet:
         _log(f"wrote {out_path}: {len(enriched)} cards", quiet=False)
