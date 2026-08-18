@@ -25,7 +25,12 @@ for the two things MTGA doesn't ship: image URLs and format legality.
 ## Requirements
 
 - Linux with Steam + Proton (tested: Arch/Omarchy + Proton Experimental)
-- MTG Arena installed at `~/.steam/steam/steamapps/common/MTGA/` (Steam App ID `2141910`)
+- MTG Arena installed (Steam App ID `2141910`). The install is located
+  automatically: every library in `libraryfolders.vdf` is searched, so a
+  secondary drive works without configuration. Override with `$MTGA_ROOT`:
+  ```bash
+  export MTGA_ROOT=/run/media/you/Drive/SteamLibrary/steamapps/common/MTGA
+  ```
 - Python 3.10+ (stdlib only, no `pip install` needed)
 - One-time: relax the kernel's ptrace restriction so we can read `/proc/<pid>/mem`:
   ```bash

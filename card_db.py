@@ -9,14 +9,41 @@ touching the network. Names come from the enUS localization table.
 from __future__ import annotations
 
 import glob
+import os
 import re
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 
-DEFAULT_MTGA_ROOT = Path(
-    "/home/ignacio/.steam/steam/steamapps/common/MTGA"
-)
+
+def _find_mtga_root() -> Path:
+    """Locate the MTGA install.
+
+    Honours $MTGA_ROOT, then walks every Steam library registered in
+    libraryfolders.vdf — MTGA is frequently installed to a secondary
+    library rather than the default ~/.steam one.
+    """
+    env = os.environ.get("MTGA_ROOT")
+    if env:
+        return Path(env).expanduser()
+
+    default = Path.home() / ".steam/steam/steamapps/common/MTGA"
+    candidates = [default]
+
+    vdf = Path.home() / ".steam/steam/steamapps/libraryfolders.vdf"
+    try:
+        for lib in re.findall(r'"path"\s+"([^"]+)"', vdf.read_text()):
+            candidates.append(Path(lib) / "steamapps/common/MTGA")
+    except OSError:
+        pass
+
+    for root in candidates:
+        if (root / "MTGA_Data" / "Downloads" / "Raw").is_dir():
+            return root
+    return default
+
+
+DEFAULT_MTGA_ROOT = _find_mtga_root()
 
 RARITY_NAMES = {1: "basic", 2: "common", 3: "uncommon", 4: "rare", 5: "mythic"}
 
